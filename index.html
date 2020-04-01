@@ -1,0 +1,165 @@
+<html>
+    <head>
+        <title>Covid19 Srilankan dashboard</title>
+        <script src="https://kit.fontawesome.com/923f6a34f6.js" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    </head>
+    <body>
+        <script>
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', "https://hpb.health.gov.lk/api/get-current-statistical", true);
+            xhr.send();
+            xhr.onreadystatechange = processRequest;
+
+            function processRequest(e) {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                var response = JSON.parse(xhr.responseText);
+                console.log(response);
+                loadData(response);
+                let hospitals=response.data.hospital_data;
+                loadHospitals(hospitals);
+                }
+
+            }
+            function loadData(response){
+                document.getElementById("dateup").innerHTML=response.data.update_date_time;
+                document.getElementById("totcase").innerHTML=response.data.local_total_cases;
+                document.getElementById("innactive").innerHTML=response.data.local_total_number_of_individuals_in_hospitals;
+                document.getElementById("newCases").innerHTML=response.data.local_new_cases;
+                document.getElementById("deaths").innerHTML=response.data.local_deaths;
+                document.getElementById("activeCases").innerHTML=response.data.local_active_cases;
+                document.getElementById("recoverd").innerHTML=response.data.local_recovered;
+            }   
+            function loadHospitals(hospitals){
+                let hospitalContainer = document.createElement('div');
+                hospitalContainer.className ='col-12 pb-5 justify-content-center';
+
+                for(i=0; i<hospitals.length; i++){
+                    let card = document.createElement('div');
+                    card.className = 'card shadow cursor-pointer card col-lg-12 col-sm-12 shadow rounded pt-2 pb-2';
+
+                    let cardCon = document.createElement('div');
+                    cardCon.className = 'col-lg-5 mb-5 col-sm-12 mr-5 float-left';
+
+                    let cardTitleEng = document.createElement('p');
+                    cardTitleEng.className = 'card-title text-center small font-weight-bold';
+                    cardTitleEng.innerHTML=hospitals[i].hospital.name;
+
+                    let cardTitleSin = document.createElement('p');
+                    cardTitleSin.className = 'card-title text-center small font-weight-bold';
+                    cardTitleSin.innerHTML=hospitals[i].hospital.name_si;
+
+                    let cardTitleTam = document.createElement('p');
+                    cardTitleTam.className = 'card-title text-center small font-weight-bold';
+                    cardTitleTam.innerHTML=hospitals[i].hospital.name_ta;
+
+                    let hr = document.createElement('hr');
+
+                    let hos1 = document.createElement('p');
+                    hos1.className = 'card-title text-center small font-weight-light';
+                    hos1.innerText ="Sri Lankans (treated /observed) :";
+                    hos1.innerHTML+=hospitals[i].cumulative_local;
+
+                    let hos2 = document.createElement('p');
+                    hos2.className = 'card-title text-center small font-weight-light';
+                    hos2.innerText ="Foreigners (treated /observed)  :";
+                    hos2.innerHTML+=hospitals[i].cumulative_foreign;
+
+                    let hos3 = document.createElement('p');
+                    hos3.className = 'card-title text-center small font-weight-light';
+                    hos3.innerText ="Sri Lankans on (treatment/observation):";
+                    hos3.innerHTML+=hospitals[i].treatment_local;
+
+                    let hos4 = document.createElement('p');
+                    hos4.className = 'card-title text-center small font-weight-light';
+                    hos4.innerText ="Foreigners on (treatment/observation):";
+                    hos4.innerHTML+=hospitals[i].treatment_foreign;
+
+                    card.appendChild(cardTitleEng);
+                    card.appendChild(cardTitleSin);
+                    card.appendChild(cardTitleTam);
+                    card.appendChild(hr);
+                    card.appendChild(hos1);
+                    card.appendChild(hos2);
+                    card.appendChild(hos3);
+                    card.appendChild(hos4);
+                    cardCon.appendChild(card);
+                    hospitalContainer.appendChild(cardCon);
+            }
+            cont.appendChild(hospitalContainer);
+                console.log(hospitals.length);             
+            }
+
+        </script>
+        <div class="container col-sm-12 col-lg-12">
+            <div class="row justify-content-center col-sm-12 col-lg-12">
+                <div class="col-lg-12 col-sm-12 justify-content-center">
+                    <h1 class="text-center">Covid-19 overview - Sri Lanka</h1><br>
+                </div>           
+            </div>
+            <div class="row justify-content-center col-sm-12 col-lg-12">
+                <div class="row col-lg-2 col-sm-2 justify-content-center">
+                    <img src="images/Sri Lanka flag-XXL-anim.gif" width="100px" height="80px"  alt="flag">
+                </div>           
+            </div>
+            <div class=" row pt-5 col-lg-12 col-sm-12 justify-content-center ">
+                    <h5>last updated</h5>                
+            </div>
+            <div class="row justify-content-center  col-lg-12 col-sm-12 ">
+                <h6 id="dateup"></h6>
+            </div>
+            <div class="row justify-content-center pt-5 col-12 col-sm-12">
+                <div class="col-lg-4 mb-5 col-sm-12">
+                    <div  class="card col-lg-8 col-sm-12 shadow rounded">
+                        <span class="card-image-top text-center pt-5"><i class="fas fa-stethoscope fa-10x"></i></span>
+                        <h5 class="card-title text-center">Total cases</h5>
+                        <h2 class="card-text text-center" id="totcase"></h2>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-5 col-sm-12">
+                    <div  class="card col-lg-8 col-sm-12 shadow rounded">
+                        <span class="card-image-top text-center pt-5"><i class="fas fa-hospital-user fa-10x"></i></span>
+                        <h5 class="card-title text-center">Curruntly at hospital</h5>
+                        <h2 class="card-text text-center" id="innactive"></h2>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-5 col-sm-12">
+                    <div  class="card col-lg-8 col-sm-12 shadow rounded">
+                        <span class="card-image-top text-center pt-5"><i class="fas fa-ambulance fa-10x"></i></span>
+                        <h5 class="card-title text-center">New Cases</h5>
+                        <h2 class="card-text text-center" id="newCases"></h2>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-5 col-sm-12">
+                    <div  class="card col-lg-8 col-sm-12 shadow rounded">
+                        <span class="card-image-top text-center pt-5"><i class="fas fa-sad-tear fa-10x"></i></span>
+                        <h5 class="card-title text-center">Total Deaths</h5>
+                        <h2 class="card-text text-center" id="deaths"></h2>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-5 col-sm-12">
+                    <div  class="card col-lg-8 col-sm-12 shadow rounded">
+                        <span class="card-image-top text-center pt-5"><i class="fas fa-procedures fa-10x"></i></span>
+                        <h5 class="card-title text-center">Active cases</h5>
+                        <h2 class="card-text text-center" id="activeCases"></h2>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-5 col-sm-12">
+                    <div  class="card col-lg-8 col-sm-12 shadow rounded">
+                        <span class="card-image-top text-center pt-5"><i class="fas fa-heartbeat fa-10x"></i></span>
+                        <h5 class="card-title text-center">Recoverd</h5>
+                        <h2 class="card-text text-center" id="recoverd"></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center col-12 pt-5" id="cont" >
+                <h4 class="pb-5">Hospital deatails</h4> 
+            </div>
+        </div>
+        <div class="page-footer font-small  p-2 bg-dark  pt-4">
+            <p class="footer-developer-data text-center text-white">Developed by : Mahesh Kularathne</p>
+            <p class="footer-developer-data text-center text-white">Contact information: <a href="mailto:mbkmahesh1996@gmail.com">
+            mbkmahesh1996@gmail.com</a>.</p>
+            </div>
+    </body>
+</html>
